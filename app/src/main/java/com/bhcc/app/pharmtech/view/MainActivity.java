@@ -18,7 +18,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.RadioButton;
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity
     private static final int ASCENDING_ID = 0;
     private static final int DESCENDING_ID = 1;
 
+    private String mGestureType;
+    private GestureDetector mGestureDetector;
+
     DrawerLayout drawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity
         setUpToolbar();
         loadDefaultFragment();
         createReviewFile();
+
     }
 
     /**
