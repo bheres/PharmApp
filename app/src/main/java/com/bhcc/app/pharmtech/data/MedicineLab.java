@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
+//senay trying to learn command line
 // Singleton + Database
 public class MedicineLab {
     private List<Medicine> medicines;  // to hold all medicines

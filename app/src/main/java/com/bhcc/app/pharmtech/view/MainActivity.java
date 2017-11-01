@@ -3,6 +3,7 @@ package com.bhcc.app.pharmtech.view;
 import com.bhcc.app.pharmtech.R;
 import com.bhcc.app.pharmtech.data.MedicineLab;
 import com.bhcc.app.pharmtech.view.filter.FilterFragment;
+import com.bhcc.app.pharmtech.view.legal.LegalFragment;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 import com.bhcc.app.pharmtech.view.quiz.SelectQuizFragment;
 import com.bhcc.app.pharmtech.view.review.ReviewFragment;
@@ -94,6 +95,10 @@ public class MainActivity extends AppCompatActivity
 
         if (itemId == R.id.review) {
             ReplaceFragmentCommand.startNewFragment(this, new ReviewFragment(), false);
+        }
+
+        if (itemId == R.id.legal) {
+            ReplaceFragmentCommand.startNewFragment(this, new LegalFragment(), false);
         }
 
         closeDrawer();
