@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,6 +32,7 @@ public class CardBackFragment extends Fragment {
 
     /**
      * To create a new instance of the fragment
+     *
      * @param medicine
      * @return CardBackFragment w/ a medicine
      */
@@ -41,10 +44,12 @@ public class CardBackFragment extends Fragment {
         return fragment;
     }
 
-    public CardBackFragment() { }
+    public CardBackFragment() {
+    }
 
     /**
      * To get Bundle Arguments (a medicine)
+     *
      * @param savedInstanceState
      */
     @Override
@@ -56,14 +61,14 @@ public class CardBackFragment extends Fragment {
         // if so get a medicine
         if (args == null) {
             medicine = new Medicine("generic", "brand", "purpose", "deaSch", "special", "category", "studyTopic");
-        }
-        else {
+        } else {
             medicine = (Medicine) args.getSerializable(ARG_MEDICINE_ID);
         }
     }
 
     /**
      * To set up the views
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -96,8 +101,7 @@ public class CardBackFragment extends Fragment {
 
         try {
             mNote.setText("Note: " + NoteLab.get(getActivity()).getNote(medicine.getGenericName()).getNote());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             mNote.setText("Note: ");
         }
 
@@ -131,8 +135,7 @@ public class CardBackFragment extends Fragment {
             if (myMediaPlayer.getDuration() == 0) {
                 playAudioButton.setVisibility(View.INVISIBLE);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             playAudioButton.setVisibility(View.INVISIBLE);
         }
 
@@ -154,29 +157,40 @@ public class CardBackFragment extends Fragment {
                     int resID = getResources().getIdentifier(fileName, "raw", getActivity().getPackageName());
                     final MediaPlayer myMediaPlayer = MediaPlayer.create(getActivity(), resID);
                     myMediaPlayer.start();
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Toast.makeText(getActivity(), "No audio file for this medicine", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        // Flipping part
-        TextView mFlip = (TextView) rootView.findViewById(R.id.flip_text_view_back);
-        mFlip.setOnClickListener(new View.OnClickListener() {
+        // Flip the card when user swipes up or down
+        rootView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                // Flip the card
-                getFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(
-                                R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                                R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                        .replace(R.id.container, CardFrontFragment.newInstance(medicine))
-                        .commit();
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP
+                        || motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    flipTheCard();
+                }
+                return true;
             }
         });
 
         return rootView;
     }
+
+    /**
+     * Same code as the method in CardFrontFragment.
+     * Was copy-pasted in mFlip.onClickListener()
+     * Made more sense to be a separate method.
+     */
+    private void flipTheCard() {
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                .replace(R.id.container, CardFrontFragment.newInstance(medicine))
+                .commit();
+    }
+
 }
