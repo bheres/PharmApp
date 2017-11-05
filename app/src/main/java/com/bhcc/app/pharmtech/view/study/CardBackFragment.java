@@ -26,6 +26,8 @@ public class CardBackFragment extends Fragment {
 
     // Bundle Argument id
     private static final String ARG_MEDICINE_ID = "arg: medicine id";
+    private static float startY;
+    private static float endY;
 
     // Medicine
     private Medicine medicine;
@@ -163,13 +165,32 @@ public class CardBackFragment extends Fragment {
             }
         });
 
+        // Flipping part
+        TextView mFlip = (TextView) rootView.findViewById(R.id.flip_text_view_back);
+        mFlip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flipTheCard();
+            }
+        });
+
         // Flip the card when user swipes up or down
         rootView.setOnTouchListener(new View.OnTouchListener() {
+            float startY;
+            float endY;
+            boolean startFlag = false;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP
-                        || motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    flipTheCard();
+                if ((motionEvent.getAction() == MotionEvent.ACTION_DOWN)) {
+                    startFlag = true;
+                    startY = motionEvent.getY();
+                } else if ((motionEvent.getAction() == MotionEvent.ACTION_MOVE)) {
+                    if (startFlag){
+                        endY = motionEvent.getY();
+                        if(Math.abs(startY - endY) > 50) {
+                            flipTheCard();
+                        }
+                    }
                 }
                 return true;
             }
