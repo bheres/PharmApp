@@ -133,11 +133,21 @@ public class CardFrontFragment extends Fragment {
 
         // Flip the card when user swipes up or down
         rootView.setOnTouchListener(new View.OnTouchListener() {
+            float startY;
+            float endY;
+            boolean startFlag = false;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP
-                        || motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    flipTheCard();
+                if ((motionEvent.getAction() == MotionEvent.ACTION_DOWN)) {
+                    startFlag = true;
+                    startY = motionEvent.getY();
+                } else if ((motionEvent.getAction() == MotionEvent.ACTION_MOVE)) {
+                    if (startFlag){
+                        endY = motionEvent.getY();
+                        if(Math.abs(startY - endY) > 50) {
+                            flipTheCard();
+                        }
+                    }
                 }
                 return true;
             }
