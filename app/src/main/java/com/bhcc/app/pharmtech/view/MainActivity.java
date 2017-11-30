@@ -2,6 +2,7 @@ package com.bhcc.app.pharmtech.view;
 
 import com.bhcc.app.pharmtech.R;
 import com.bhcc.app.pharmtech.data.MedicineLab;
+import com.bhcc.app.pharmtech.view.about.AboutFragment;
 import com.bhcc.app.pharmtech.view.filter.FilterFragment;
 import com.bhcc.app.pharmtech.view.legal.LegalFragment;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
@@ -106,6 +107,9 @@ public class MainActivity extends AppCompatActivity
 
         if (itemId == R.id.legal) {
             ReplaceFragmentCommand.startNewFragment(this, new LegalFragment(), false);
+        }
+        if (itemId == R.id.about) {
+            ReplaceFragmentCommand.startNewFragment(this, new AboutFragment(), false);
         }
 
         closeDrawer();
