@@ -10,6 +10,7 @@ import com.bhcc.app.pharmtech.view.review.ReviewFragment;
 import com.bhcc.app.pharmtech.view.study.MedicineListFragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -27,6 +28,7 @@ import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +55,6 @@ public class MainActivity extends AppCompatActivity
         setUpToolbar();
         loadDefaultFragment();
         createReviewFile();
-
     }
 
     /**
@@ -195,6 +196,9 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
+    }
+    protected void onResume(){
+        super.onResume();
     }
 
 }

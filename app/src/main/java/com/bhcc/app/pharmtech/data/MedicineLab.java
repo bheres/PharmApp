@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 //senay trying to learn command line
 // Singleton + Database
 public class MedicineLab {
@@ -24,6 +25,7 @@ public class MedicineLab {
 
     /**
      * To get the medicineLab
+     *
      * @param context
      * @return MedicineLab
      */
@@ -36,6 +38,7 @@ public class MedicineLab {
 
     /**
      * Constructor
+     *
      * @param context
      */
     private MedicineLab(Context context) {
@@ -61,7 +64,7 @@ public class MedicineLab {
             medicines = new ArrayList<>();
 
             // get all medicines from a database to an array
-            MedicineCursorWrapper cursor = queryCrimes(null, null, MedicineSchema.MedicineTable.Cols.GENERIC_NAME);
+            MedicineCursorWrapper cursor = queryMedicines(null, null, MedicineSchema.MedicineTable.Cols.GENERIC_NAME);
 
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -71,7 +74,7 @@ public class MedicineLab {
             cursor.close();
 
 
-        }catch(SQLException sqle){
+        } catch (SQLException sqle) {
 
             throw sqle;
 
@@ -80,6 +83,7 @@ public class MedicineLab {
 
     /**
      * To get all medicines
+     *
      * @return Medicines List
      */
     public List<Medicine> getMedicines() {
@@ -91,14 +95,15 @@ public class MedicineLab {
 
     /**
      * To get the medicine w/ specific generic name
+     *
      * @param genericName
      * @return Medicine
      */
     public Medicine getMedicine(String genericName) {
 
-        MedicineCursorWrapper cursor = queryCrimes(
+        MedicineCursorWrapper cursor = queryMedicines(
                 MedicineSchema.MedicineTable.Cols.GENERIC_NAME + " = ?",
-                new String[] { genericName },
+                new String[]{genericName},
                 MedicineSchema.MedicineTable.Cols.GENERIC_NAME
         );
 
@@ -116,13 +121,14 @@ public class MedicineLab {
 
     /**
      * To get medicines w/ specific arguments
+     *
      * @param whereClause
      * @param whereArgs
      * @param orderBy
      * @return List of Medicines
      */
     public List<Medicine> getSpecificMedicines(String whereClause, String[] whereArgs, String orderBy) {
-        MedicineCursorWrapper cursor = queryCrimes(whereClause, whereArgs, orderBy);
+        MedicineCursorWrapper cursor = queryMedicines(whereClause, whereArgs, orderBy);
         List<Medicine> list = new ArrayList<>();
 
         try {
@@ -144,12 +150,13 @@ public class MedicineLab {
 
     /**
      * To get medicines w/ the raw SQL Command
+     *
      * @param rawSql
      * @param whereArgs
      * @return List of Medicines
      */
     public List<Medicine> getMedicinesWithRawSql(String rawSql, String[] whereArgs) {
-        MedicineCursorWrapper cursor = rawQueryCrimes(rawSql, whereArgs);
+        MedicineCursorWrapper cursor = rawQueryMedicines(rawSql, whereArgs);
         List<Medicine> list = new ArrayList<>();
 
         try {
@@ -171,12 +178,13 @@ public class MedicineLab {
 
     /**
      * To get study topics
+     *
      * @return List of Study Topics
      */
     public List<String> getStudyTopics() {
-        MedicineCursorWrapper cursor = rawQueryCrimes(
+        MedicineCursorWrapper cursor = rawQueryMedicines(
                 "SELECT DISTINCT " + MedicineSchema.MedicineTable.Cols.STUDY_TOPIC + " FROM " +
-                MedicineSchema.MedicineTable.NAME, null);
+                        MedicineSchema.MedicineTable.NAME, null);
         List<String> list = new ArrayList<>();
 
         try {
@@ -200,12 +208,13 @@ public class MedicineLab {
 
     /**
      * To get a cursor wrapper w/ arguments
+     *
      * @param whereClause
      * @param whereArgs
      * @param orderBy
      * @return MedicineCursorWrapper
      */
-    private MedicineCursorWrapper queryCrimes(String whereClause, String[] whereArgs, String orderBy) {
+    private MedicineCursorWrapper queryMedicines(String whereClause, String[] whereArgs, String orderBy) {
         Cursor cursor = mDatabase.query(
                 MedicineSchema.MedicineTable.NAME,
                 null, // Columns - null selects all columns
@@ -221,11 +230,12 @@ public class MedicineLab {
 
     /**
      * To get a cursor wrapper w/ a raw SQL Command
+     *
      * @param rawSql
      * @param whereArgs
      * @return MedicinCursorWrapper
      */
-    private MedicineCursorWrapper rawQueryCrimes(String rawSql, String[] whereArgs) {
+    private MedicineCursorWrapper rawQueryMedicines(String rawSql, String[] whereArgs) {
         Cursor cursor = mDatabase.rawQuery(rawSql, whereArgs);
 
         return new MedicineCursorWrapper(cursor);
@@ -233,12 +243,13 @@ public class MedicineLab {
 
     /**
      * To update medicineLab w/ specific arguments
+     *
      * @param whereClause
      * @param whereArgs
      * @param orderBy
      */
     public void updateMedicineLab(String whereClause, String[] whereArgs, String orderBy) {
-        MedicineCursorWrapper cursor = queryCrimes(whereClause, whereArgs, orderBy);
+        MedicineCursorWrapper cursor = queryMedicines(whereClause, whereArgs, orderBy);
 
         try {
             if (cursor.getCount() == 0) {
@@ -256,6 +267,14 @@ public class MedicineLab {
         } finally {
             cursor.close();
         }
+    }
+
+    public Medicine getRandomMedicine() {
+
+        Cursor cursor = mDatabase.rawQuery("select * from " + MedicineSchema.MedicineTable.NAME + " LIMIT 1 OFFSET", null);
+        MedicineCursorWrapper wrapper = new MedicineCursorWrapper(cursor);
+        Medicine medicine = wrapper.getMedicine();
+        return medicine;
     }
 
     /**
