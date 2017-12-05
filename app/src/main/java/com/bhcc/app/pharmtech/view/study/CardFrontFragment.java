@@ -1,7 +1,7 @@
 package com.bhcc.app.pharmtech.view.study;
 
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +31,7 @@ public class CardFrontFragment extends Fragment {
      * To create a new fragment
      *
      * @param medicine
+     * @return
      * @return
      */
     public static CardFrontFragment newInstance(Medicine medicine) {
@@ -144,7 +145,7 @@ public class CardFrontFragment extends Fragment {
                 } else if ((motionEvent.getAction() == MotionEvent.ACTION_MOVE)) {
                     if (startFlag){
                         endY = motionEvent.getY();
-                        if(Math.abs(startY - endY) > 50) {
+                        if(Math.abs(startY - endY) > 250) {
                             flipTheCard();
                         }
                     }
@@ -159,9 +160,8 @@ public class CardFrontFragment extends Fragment {
     private void flipTheCard() {
         getFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(
-                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+//                .setCustomAnimations(
+//                        android.R.anim.fade_out, android.R.anim.fade_in)
                 .replace(R.id.container, CardBackFragment.newInstance(medicine))
                 .commit();
     }
