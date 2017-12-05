@@ -1,16 +1,16 @@
 package com.bhcc.app.pharmtech.view.study;
 
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,12 +24,15 @@ public class CardBackFragment extends Fragment {
 
     // Bundle Argument id
     private static final String ARG_MEDICINE_ID = "arg: medicine id";
+    private static float startY;
+    private static float endY;
 
     // Medicine
     private Medicine medicine;
 
     /**
      * To create a new instance of the fragment
+     *
      * @param medicine
      * @return CardBackFragment w/ a medicine
      */
@@ -41,10 +44,12 @@ public class CardBackFragment extends Fragment {
         return fragment;
     }
 
-    public CardBackFragment() { }
+    public CardBackFragment() {
+    }
 
     /**
      * To get Bundle Arguments (a medicine)
+     *
      * @param savedInstanceState
      */
     @Override
@@ -56,14 +61,14 @@ public class CardBackFragment extends Fragment {
         // if so get a medicine
         if (args == null) {
             medicine = new Medicine("generic", "brand", "purpose", "deaSch", "special", "category", "studyTopic");
-        }
-        else {
+        } else {
             medicine = (Medicine) args.getSerializable(ARG_MEDICINE_ID);
         }
     }
 
     /**
      * To set up the views
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -96,8 +101,7 @@ public class CardBackFragment extends Fragment {
 
         try {
             mNote.setText("Note: " + NoteLab.get(getActivity()).getNote(medicine.getGenericName()).getNote());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             mNote.setText("Note: ");
         }
 
@@ -131,8 +135,7 @@ public class CardBackFragment extends Fragment {
             if (myMediaPlayer.getDuration() == 0) {
                 playAudioButton.setVisibility(View.INVISIBLE);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             playAudioButton.setVisibility(View.INVISIBLE);
         }
 
@@ -154,8 +157,7 @@ public class CardBackFragment extends Fragment {
                     int resID = getResources().getIdentifier(fileName, "raw", getActivity().getPackageName());
                     final MediaPlayer myMediaPlayer = MediaPlayer.create(getActivity(), resID);
                     myMediaPlayer.start();
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Toast.makeText(getActivity(), "No audio file for this medicine", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -166,17 +168,48 @@ public class CardBackFragment extends Fragment {
         mFlip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Flip the card
-                getFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(
-                                R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                                R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                        .replace(R.id.container, CardFrontFragment.newInstance(medicine))
-                        .commit();
+                flipTheCard();
+            }
+        });
+
+        // Flip the card when user swipes up or down
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            float startY;
+            float endY;
+            boolean startFlag = false;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if ((motionEvent.getAction() == MotionEvent.ACTION_DOWN)) {
+                    startFlag = true;
+                    startY = motionEvent.getY();
+                } else if ((motionEvent.getAction() == MotionEvent.ACTION_MOVE)) {
+                    if (startFlag) {
+                        endY = motionEvent.getY();
+                        if (Math.abs(startY - endY) > 250) {
+                            flipTheCard();
+                        }
+                    }
+                }
+                return true;
             }
         });
 
         return rootView;
     }
+
+    /**
+     * Same code as the method in CardFrontFragment.
+     * Was copy-pasted in mFlip.onClickListener()
+     * Made more sense to be a separate method.
+     */
+    private void flipTheCard() {
+        getFragmentManager()
+                .beginTransaction()
+//                .setCustomAnimations(
+//                        android.R.anim.fade_out, android.R.anim.fade_in)
+                .replace(R.id.container, CardFrontFragment.newInstance(medicine))
+                .commit();
+    }
+
 }

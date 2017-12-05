@@ -1,11 +1,12 @@
 package com.bhcc.app.pharmtech.view.study;
 
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,14 +20,18 @@ public class CardFrontFragment extends Fragment {
 
     // Bundle arguments
     private static final String ARG_MEDICINE_ID = "arg: medicine id";
+    private static final String DEBUG_TAG = "Debug";
 
     // Medicine
     private Medicine medicine;
+
+    private String mGestureType;
 
     /**
      * To create a new fragment
      *
      * @param medicine
+     * @return
      * @return
      */
     public static CardFrontFragment newInstance(Medicine medicine) {
@@ -57,6 +62,7 @@ public class CardFrontFragment extends Fragment {
         } else {
             medicine = (Medicine) args.getSerializable(ARG_MEDICINE_ID);
         }
+
     }
 
 
@@ -126,6 +132,27 @@ public class CardFrontFragment extends Fragment {
             }
         });
 
+        // Flip the card when user swipes up or down
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            float startY;
+            float endY;
+            boolean startFlag = false;
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if ((motionEvent.getAction() == MotionEvent.ACTION_DOWN)) {
+                    startFlag = true;
+                    startY = motionEvent.getY();
+                } else if ((motionEvent.getAction() == MotionEvent.ACTION_MOVE)) {
+                    if (startFlag){
+                        endY = motionEvent.getY();
+                        if(Math.abs(startY - endY) > 250) {
+                            flipTheCard();
+                        }
+                    }
+                }
+                return true;
+            }
+        });
 
         return rootView;
     }
@@ -133,10 +160,10 @@ public class CardFrontFragment extends Fragment {
     private void flipTheCard() {
         getFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(
-                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+//                .setCustomAnimations(
+//                        android.R.anim.fade_out, android.R.anim.fade_in)
                 .replace(R.id.container, CardBackFragment.newInstance(medicine))
                 .commit();
     }
+
 }

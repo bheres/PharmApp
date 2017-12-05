@@ -2,13 +2,16 @@ package com.bhcc.app.pharmtech.view;
 
 import com.bhcc.app.pharmtech.R;
 import com.bhcc.app.pharmtech.data.MedicineLab;
+import com.bhcc.app.pharmtech.view.about.AboutFragment;
 import com.bhcc.app.pharmtech.view.filter.FilterFragment;
+import com.bhcc.app.pharmtech.view.legal.LegalFragment;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 import com.bhcc.app.pharmtech.view.quiz.SelectQuizFragment;
 import com.bhcc.app.pharmtech.view.review.ReviewFragment;
 import com.bhcc.app.pharmtech.view.study.MedicineListFragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,12 +21,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,6 +44,12 @@ public class MainActivity extends AppCompatActivity
 
     private static final int ASCENDING_ID = 0;
     private static final int DESCENDING_ID = 1;
+    private static final int ASCENDING_BRAND_ID = 2;
+    private static final int DESCENDING_BRAND_ID = 3;
+
+
+    private String mGestureType;
+    private GestureDetector mGestureDetector;
 
     DrawerLayout drawerLayout;
     @Override
@@ -96,6 +108,13 @@ public class MainActivity extends AppCompatActivity
             ReplaceFragmentCommand.startNewFragment(this, new ReviewFragment(), false);
         }
 
+        if (itemId == R.id.legal) {
+            ReplaceFragmentCommand.startNewFragment(this, new LegalFragment(), false);
+        }
+        if (itemId == R.id.about) {
+            ReplaceFragmentCommand.startNewFragment(this, new AboutFragment(), false);
+        }
+
         closeDrawer();
 
         return false;
@@ -130,8 +149,10 @@ public class MainActivity extends AppCompatActivity
 
         List<String> stringList=new ArrayList<>();  // list to hold choices
         // add choices
-        stringList.add("Ascending");
-        stringList.add("Descending");
+        stringList.add("Ascending (Generic name)");
+        stringList.add("Descending (Generic name)");
+        stringList.add("Ascending (Brand name)");
+        stringList.add("Descending (Brand name)");
 
         // Radio group to hold radio buttons
         final RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
@@ -147,6 +168,16 @@ public class MainActivity extends AppCompatActivity
         rbDescending.setId(DESCENDING_ID);
         rg.addView(rbDescending);
 
+        RadioButton rbAscendingBrand = new RadioButton(this);
+        rbAscendingBrand.setText(stringList.get(ASCENDING_BRAND_ID));
+        rbAscendingBrand.setId(ASCENDING_BRAND_ID);
+        rg.addView(rbAscendingBrand);
+
+        RadioButton rbDescendingBrand = new RadioButton(this);
+        rbDescendingBrand.setText(stringList.get(DESCENDING_BRAND_ID));
+        rbDescendingBrand.setId(DESCENDING_BRAND_ID);
+        rg.addView(rbDescendingBrand);
+
         TextView tvOK = (TextView) dialog.findViewById(R.id.choose_sorting_ok_button);
         tvOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +192,15 @@ public class MainActivity extends AppCompatActivity
                         MedicineLab.get(getApplication()).sortDescending();
                         Log.i("test3", MedicineLab.get(getApplication()).getMedicines().get(0).getGenericName());
                         break;
+                    case ASCENDING_BRAND_ID:
+                        MedicineLab.get(getApplication()).sortAscendingBrand();
+                        Log.i("test3", MedicineLab.get(getApplication()).getMedicines().get(0).getGenericName());
+                        break;
+                    case DESCENDING_BRAND_ID:
+                        MedicineLab.get(getApplication()).sortDescendingBrand();
+                        Log.i("test3", MedicineLab.get(getApplication()).getMedicines().get(0).getGenericName());
+                        break;
+
                 }
                 dialog.dismiss();
                 loadDefaultFragment();
@@ -184,6 +224,9 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
+    }
+    protected void onResume(){
+        super.onResume();
     }
 
 }

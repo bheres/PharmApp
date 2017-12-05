@@ -1,11 +1,13 @@
 package com.bhcc.app.pharmtech.view.study;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.bhcc.app.pharmtech.R;
@@ -15,7 +17,7 @@ import com.bhcc.app.pharmtech.data.model.Medicine;
 import java.util.List;
 
 
-public class CardActivity extends Activity {
+public class CardActivity extends FragmentActivity {
 
     // Extra for an intent
     private static final String EXTRA_MEDICINE_GENERIC_NAME = "extra: medicine generic name";
@@ -48,7 +50,7 @@ public class CardActivity extends Activity {
         String medicineGenericName = getIntent().getStringExtra(EXTRA_MEDICINE_GENERIC_NAME);
         mMedicines = MedicineLab.get(this).getMedicines();
 
-        CardPagerAdapter adapter = new CardPagerAdapter(getFragmentManager());
+        CardPagerAdapter adapter = new CardPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(adapter);
 
@@ -63,7 +65,7 @@ public class CardActivity extends Activity {
     /**
      * Pager Adapter
      */
-    public class CardPagerAdapter extends android.support.v13.app.FragmentPagerAdapter {
+    public class CardPagerAdapter extends FragmentPagerAdapter {
 
         /**
          * Constructor
