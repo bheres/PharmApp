@@ -300,4 +300,22 @@ public class MedicineLab {
             }
         }));
     }
+
+    public void sortAscendingBrand(){
+        Collections.sort(medicines, new Comparator<Medicine>() {
+            @Override
+            public int compare(Medicine o1, Medicine o2) {
+                return o1.getBrandName().compareTo(o2.getBrandName());
+            }
+        });
+    }
+    public void sortDescendingBrand(){
+        Collections.sort(medicines, Collections.<Medicine>reverseOrder(new Comparator<Medicine>() {
+            @Override
+            public int compare(Medicine o1, Medicine o2) {
+                return o1.getBrandName().compareTo(o2.getBrandName());
+            }
+        }));
+    }
+
 }
