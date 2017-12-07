@@ -271,7 +271,8 @@ public class MedicineLab {
 
     public Medicine getRandomMedicine() {
 
-        Cursor cursor = mDatabase.rawQuery("select * from " + MedicineSchema.MedicineTable.NAME + " LIMIT 1 OFFSET", null);
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + MedicineSchema.MedicineTable.NAME + " ORDER BY RANDOM() LIMIT 1", null);
+        cursor.moveToFirst();
         MedicineCursorWrapper wrapper = new MedicineCursorWrapper(cursor);
         Medicine medicine = wrapper.getMedicine();
         return medicine;
