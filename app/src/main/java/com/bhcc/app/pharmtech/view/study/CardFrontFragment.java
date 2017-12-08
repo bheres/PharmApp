@@ -84,6 +84,8 @@ public class CardFrontFragment extends Fragment {
 
         try {
             String fileName = medicine.getGenericName().toLowerCase();
+            // Replace all non letters with an empty string
+            fileName = fileName.replaceAll("[^A-Za-z]", "");
             if (fileName.contains("/")) {
                 StringBuilder stringBuilder = new StringBuilder(fileName);
                 stringBuilder.deleteCharAt(fileName.indexOf('/'));
@@ -105,6 +107,8 @@ public class CardFrontFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     String fileName = medicine.getGenericName().toLowerCase();
+                    // Replace all non letters with an empty string
+                    fileName = fileName.replaceAll("[^A-Za-z]", "");
                     if (fileName.contains("/")) {
                         StringBuilder stringBuilder = new StringBuilder(fileName);
                         stringBuilder.deleteCharAt(fileName.indexOf('/'));
