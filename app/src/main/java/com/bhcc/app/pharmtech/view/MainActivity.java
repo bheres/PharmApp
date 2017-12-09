@@ -8,6 +8,7 @@ import com.bhcc.app.pharmtech.view.legal.LegalFragment;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 import com.bhcc.app.pharmtech.view.quiz.SelectQuizFragment;
 import com.bhcc.app.pharmtech.view.review.ReviewFragment;
+import com.bhcc.app.pharmtech.view.study.CardContainerFragment;
 import com.bhcc.app.pharmtech.view.study.MedicineListFragment;
 
 import android.app.Dialog;
@@ -15,16 +16,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -41,6 +50,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String fileName  = "ReviewInfo.txt";
+    private static final String ARG_MEDICINE_ID = "arg: medicine id";
+
 
     private static final int ASCENDING_ID = 0;
     private static final int DESCENDING_ID = 1;
@@ -59,6 +70,15 @@ public class MainActivity extends AppCompatActivity
         setUpToolbar();
         loadDefaultFragment();
         createReviewFile();
+
+        // To make the drug of the day pop up more often, uncomment this code in onResume()
+        // As of now, it pops up when the app is (re)opened
+        FragmentManager manager = getSupportFragmentManager();
+        DailyDrugDialogFragment dailyDrugDialogFragment =
+                DailyDrugDialogFragment
+                        .newInstance(MedicineLab.get(getApplication()).getRandomMedicine());
+        dailyDrugDialogFragment.show(manager, ARG_MEDICINE_ID);
+
     }
 
     /**
@@ -225,8 +245,26 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    public void showDialog(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View v = this.getLayoutInflater().inflate(R.layout.fragment_card_container, null);
+        builder.setView(v)
+                .setPositiveButton("OK", null)
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     protected void onResume(){
         super.onResume();
+        // Make the drug of the "day" pop up each time the user returns to the list of drugs
+//        FragmentManager manager = getSupportFragmentManager();
+//        DailyDrugDialogFragment dailyDrugDialogFragment =
+//                DailyDrugDialogFragment
+//                        .newInstance(MedicineLab.get(getApplication()).getRandomMedicine());
+//        dailyDrugDialogFragment.show(manager, ARG_MEDICINE_ID);
     }
 
 }
